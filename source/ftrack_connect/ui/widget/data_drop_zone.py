@@ -12,6 +12,25 @@ import clique
 import riffle.browser
 from riffle.icon_factory import IconFactory, IconType
 
+import win32wnet
+import os.path
+
+def getNetPath(_path):
+    #把映射到本地的盘符修改为全局网络路径
+
+    driver_name,file_name = os.path.splitdrive(r'{0}'.format(_path))
+    full_path  = None
+
+    try:
+        remote_path = win32wnet.WNetGetConnection(driver_name)
+        full_path = r'{0}{1}'.format(remote_path,file_name)
+    except:
+        print('need server path')
+
+    return full_path
+
+    
+# end def
 
 class CustomIconFactory(IconFactory):
     def icon(self, specification):
@@ -105,6 +124,10 @@ class DataDropZone(QtWidgets.QFrame):
                 # Convert to unicode.
                 if isinstance(item, str):
                     item = item
+                    netPath = getNetPath(item)
+                    if netPath:
+                        item = netPath
+
                 self.dataSelected.emit(item)
 
         # TODO: This is fragile and should probably be available as public
@@ -141,7 +164,11 @@ class DataDropZone(QtWidgets.QFrame):
         for path in mimeData.urls():
             localPath = path.toLocalFile()
             if os.path.isfile(localPath):
-                validPaths.append(localPath)
+                netPath = getNetPath(localPath)
+                if(netPath):
+                    validPaths.append(netPath)
+                else:
+                    validPaths.append(localPath)
                 self.log.debug(u'Dropped file: {0}'.format(localPath))
             else:
                 self._setDropZoneState('invalid')
