@@ -31,16 +31,17 @@ class OpenComponentUseToolsAction(object):
 
     def findApp(self,data):
         app_list = {}
+        app_dir ={}
         for app_file in data['Apps']:
-            app_list[app_file["name"]]=data['Directory']+app_file["name"]+"*.exe"
-            
-        app_dir = {}
-        for key in list(app_list.keys()):
-            appPath = sorted(glob.glob(app_list[key]),reverse = True)
-            if len(appPath) > 0:
-                app_dir[key] = appPath[0]
-            else:
-                app_dir[key] = ""
+                appPath = []
+                for root,dirs,files in os.walk(data['Directory']):
+                    for filename in files:
+                        if filename.lower().startswith(app_file['name']) and filename.lower().endswith(".exe"):
+                           appPath.append(os.path.join(root,filename)) 
+                if len(appPath) > 0:
+                    app_dir[app_file['name']] = sorted(appPath,reverse = True)[0]
+                else:
+                    app_dir[app_file['name']] = ""
         return app_dir
             
                 
