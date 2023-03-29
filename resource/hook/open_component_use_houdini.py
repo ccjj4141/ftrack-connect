@@ -12,8 +12,8 @@ import appdirs
 import json
 import re
 
-class OpenComponentUseNukeAction(object):
-    '''Action to open component directory use nuke.'''
+class OpenComponentUseHoudiniAction(object):
+    '''Action to open component directory use tools.'''
 
     
     
@@ -27,29 +27,27 @@ class OpenComponentUseNukeAction(object):
         '''Instantiate action with *session*.'''
         self.session = session
         self.logger = logger
-        self.app_name = 'nuke'
+        self.app_name = 'rv'
         self.search_path = "C:\\Program Files\\"
         self.apps = self.getAppInfo()
+        #print(self.apps)
 
     def getAppInfo(self):
-        
-        
         appInfo = []
         for root,dirs,files in os.walk(self.search_path):
-            for filename in files:
-                if filename.lower().startswith(self.app_name) and filename.lower().endswith(".exe"):
-                    _name = self.check_appVersion(self.app_name,os.path.join(root,filename))
+            for file in files:
+                if file.lower() == self.app_name.lower()+'.exe':
+                    _name = self.check_appVersion(self.app_name,os.path.join(root,file)).replace(" ","")
                     appInfo.append({"name":_name,
-                                    "path":os.path.join(root,filename),
+                                    "path":os.path.join(root,file),
                                     "identifier":"ftrack-connect-open-component-use-{0}".format(_name)}) 
                         
-        return appInfo
-            
-                
+        return appInfo  
+
     def check_appVersion(self,name,path):
-        # 获取文件名
+            # 获取文件名
         filename = os.path.basename(path)
-    # 匹配文件名是否包含"nuke"和数字
+        # 匹配文件名是否包含"nuke"和数字
         if filename.endswith('.exe'):
             folders = list(reversed(path.split(os.sep)))
             #print(folders)
@@ -190,7 +188,8 @@ class OpenComponentUseNukeAction(object):
 
 def register(session, **kw):
     '''Register hooks.'''
-
+    
+    
     logger = logging.getLogger('ftrack_connect:open-component-use-tools')
 
     # Validate that session is an instance of ftrack_api.session.Session. If
@@ -203,5 +202,5 @@ def register(session, **kw):
         )
         return
 
-    action = OpenComponentUseNukeAction(session, logger)
+    action = OpenComponentUseHoudiniAction(session, logger)
     action.register()
