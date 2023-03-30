@@ -6,7 +6,8 @@
            "search_path":["nuke"],
            "arg":["--nukex"],
            "file_name":"nuke",
-           "version_name":"nuke"
+           "version_name":"nuke",
+           "custom_path":[]
            
 
         },
@@ -16,7 +17,9 @@
             "search_path":["Side Effects Software"],
             "arg":[""],
             "file_name":"houdinifx",
-           "version_name":"houdini"
+            "version_name":"houdini",
+            "custom_path":[]
+
         },
         {
             "name":"rv",
@@ -24,7 +27,9 @@
             "search_path":["shotgun","autodesk"],
             "arg":[""],
             "file_name":"rv",
-           "version_name":"rv"
+            "version_name":"rv",
+            "custom_path":["D:\\program\\rv2002\\bin\\rv.exe"]
+
         }
     ],
     "Directory":"C:\\Program Files\\"

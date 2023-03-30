@@ -12,7 +12,7 @@ import appdirs
 import json
 import re
 
-class OpenComponentUseHoudiniAction(object):
+class OpenComponentUseToolsSwitchByFileTypeAction(object):
     '''Action to open component directory use tools.'''
 
     
@@ -42,24 +42,35 @@ class OpenComponentUseHoudiniAction(object):
         with open(app_json,'r') as f:
             apps = json.load(f)
         for app in apps['Apps']:
-            for target_path in app['search_path']:
-                for subdirectory in os.listdir(apps['Directory']):
-                    if  target_path.lower() in subdirectory.lower():
-                        #search_path.append(os.path.join(apps['Directory'],subdirectory))
-                        #print(os.path.join(apps['Directory'],subdirectory))
-                        for root,dirs,files in os.walk(os.path.join(apps['Directory'],subdirectory)):
-                            for file in files:
-                                file_lower = file.lower()
-                                if (file_lower == app["file_name"]+'.exe') or (
-                                    file_lower.startswith(app["file_name"]) and bool(re.search(r'\d',file_lower)) and file.endswith('.exe')
-                                ):
-                                    print(file_lower)
-                                    _name = self.check_appVersion(app["version_name"],os.path.join(root,file)).replace(" ","")
-                                    appInfo.append({"name":_name,
-                                                    "path":os.path.join(root,file),
-                                                    "identifier":"ftrack-connect-open-component-use-{0}".format(_name),
-                                                    "file_type":app["file_type"]}) 
-                          
+            if len(app['search_path']) > 0:
+                for target_path in app['search_path']:
+                    for subdirectory in os.listdir(apps['Directory']):
+                        if  target_path.lower() in subdirectory.lower():
+                            #search_path.append(os.path.join(apps['Directory'],subdirectory))
+                            #print(os.path.join(apps['Directory'],subdirectory))
+                            for root,dirs,files in os.walk(os.path.join(apps['Directory'],subdirectory)):
+                                
+                                for file in files:
+                                    file_lower = file.lower()
+                                    if (file_lower == app["file_name"]+'.exe') or (
+                                        file_lower.startswith(app["file_name"]) and bool(re.search(r'\d',file_lower)) and file.endswith('.exe')
+                                    ):
+                                        #print(file_lower)
+                                        _name = self.check_appVersion(app["version_name"],os.path.join(root,file)).replace(" ","")
+                                        appInfo.append({"name":_name,
+                                                        "path":os.path.join(root,file),
+                                                        "identifier":"ftrack-connect-open-component-use-{0}".format(_name),
+                                                        "file_type":app["file_type"]}) 
+            for _path in app['custom_path']:
+                
+                if os.path.exists(_path):
+                    #print(_path)
+                    _name = self.check_appVersion(app["version_name"],_path).replace(" ","")
+                    appInfo.append({"name":_name,
+                                    "path":_path,
+                                    "identifier":"ftrack-connect-open-component-use-{0}".format(_name),
+                                    "file_type":app["file_type"]}) 
+        #print(appInfo)
         return appInfo    
 
     def check_appVersion(self,name,path):
@@ -115,7 +126,7 @@ class OpenComponentUseHoudiniAction(object):
                 return self.failed
             
             file_type = os.path.splitext(path)[1]
-            print(file_type)
+            #print(file_type)
 
             
             items = []
@@ -241,5 +252,5 @@ def register(session, **kw):
         )
         return
 
-    action = OpenComponentUseHoudiniAction(session, logger)
+    action = OpenComponentUseToolsSwitchByFileTypeAction(session, logger)
     action.register()
