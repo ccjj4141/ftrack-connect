@@ -3,20 +3,30 @@
         {
            "name":"nuke",
            "file_type":[".nk"],
-           "identifier":"ftrack-connect-open-component-use-nuke"
+           "search_path":["nuke"],
+           "arg":["--nukex"],
+           "file_name":"nuke",
+           "version_name":"nuke"
+           
 
         },
         {
-            "name":"houdini",
+            "name":"houdinifx",
             "file_type":[".hip"],
-            "identifier":"ftrack-connect-open-component-use-houdini"
+            "search_path":["Side Effects Software"],
+            "arg":[""],
+            "file_name":"houdinifx",
+           "version_name":"houdini"
         },
         {
             "name":"rv",
-            "file_type":[".exr",".png",".jpg",".bmp",".tif",".tiff"],
-            "identifier":"ftrack-connect-open-component-use-rv"
+            "file_type":[".exr",".jpg",".png",".bmp",".tiff"],
+            "search_path":["shotgun","autodesk"],
+            "arg":[""],
+            "file_name":"rv",
+           "version_name":"rv"
         }
     ],
-    "Directory":"C:\\Program Files\\**\\"
+    "Directory":"C:\\Program Files\\"
  
 }
